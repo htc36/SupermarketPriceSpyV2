@@ -1,12 +1,24 @@
 <template>
-  <div class="container is-fluid" style="width: 80%">
-  <div align="center" style="padding-top: 3px">
-    <h1>hey</h1>
-      <b-image
-              :src="imageName"
-      ></b-image>
+  <div class="container is-fluid"  style="width: 80%; padding-top: 40px">
+    <div class="tile is-ancestor">
+      <div class="tile is-parent">
+        <div class="tile is-child box" align="center">
+          <b-image v-if="countdown != null"
+                   :src="imageName"
+                   style="width: 300px; height: 300px"
+          ></b-image>
+        </div>
+        <div class="tile is-4 is-vertical is-parent box">
+          <div class="tile is-child box">
+            <p class="title">{{countdown.brand}} {{countdown.name}}</p>
+            <p align="bottom">${{countdown.salePrice}}</p>
+          </div>
+<!--          <div class="tile is-child box">-->
+<!--            <p class="title">Two</p>-->
+<!--          </div>-->
+        </div>
+      </div>
     </div>
-
   </div>
 
 
