@@ -1,22 +1,22 @@
 <template>
   <div class="container is-fluid"  style="width: 80%; padding-top: 40px">
     <div class="tile is-ancestor">
-      <div class="tile is-parent">
-        <div class="tile is-child box" align="center">
-          <b-image v-if="countdown != null"
-                   :src="imageName"
-                   style="width: 300px; height: 300px"
-          ></b-image>
-        </div>
-        <div class="tile is-5 is-vertical is-parent box">
+      <div class="tile is-vertical">
+        <div class="tile is-parent ">
+          <div class="tile is-child box is-7" align="center">
+            <b-image v-if="countdown != null"
+                     :src="imageName"
+                     style="width: 300px; height: 300px"
+            ></b-image>
+          </div>
           <div class="tile is-child box">
             <p class="title">{{displayName}}</p>
             <p >{{countdown.volSize}}</p>
             <p class="title" align="right" >${{countdown.salePrice}}</p>
           </div>
-<!--          <div class="tile is-child box">-->
-<!--            <p class="title">Two</p>-->
-<!--          </div>-->
+      </div>
+        <div class="tile is-child box">
+          <Plotly :data="data" :layout="layout" :display-mode-bar="false"></Plotly>
         </div>
       </div>
     </div>
@@ -27,14 +27,28 @@
 
 <script>
     import axios from 'axios';
+    import { Plotly } from 'vue-plotly'
 
     export default {
         name: "ProductDetails",
+        components : {
+          Plotly
+        },
         data() {
             return {
                 dates:[],
-                countdown:null,
-                pakSave:null
+                countdown:[],
+                pakSave:[],
+                data:[],
+                layout:{
+                  title: "Price History",
+                  hovermode: "x",
+                  spikesnap: "cursor",
+                  // hoverinfo: "all",
+                  hoverformat:"%H~%M~%S.%2f",
+                  spikedistance: 100,
+                  xaxis: {'showspikes' : true}
+                }
 
             }
         },
@@ -46,10 +60,49 @@
                         this.dates = response.data.dates
                         this.countdown = response.data.result.countdown
                         this.pakSave = response.data.result.paknsave
+                        this.setPlotPoints()
                     })
                     .catch(e => {
                         this.errors.push(e)
                     })
+            },
+            setPlotPoints() {
+              let countdownX = []
+              let pakSaveX = []
+              if (this.countdown.length != 0) {
+                for (const dateIndex of this.countdown.date) {
+                  const date = this.dates[dateIndex].split("/")
+                  console.log(this.dates[dateIndex])
+                  const month = parseInt(date[1]) - 1
+                  const dateObj = new Date(date[2], month, date[0])
+                  countdownX.push(dateObj)
+                  console.log(dateObj)
+                }
+              }
+              if (this.pakSave.length != 0) {
+                for (const dateIndex of this.pakSave[0].date) {
+                  const date = this.dates[dateIndex].split("/")
+                  const dateObj = new Date(date[2], date[1], date[0])
+                  pakSaveX.push(dateObj)
+                }
+              }
+              const countdownPoints = {
+                    x: countdownX,
+                    y: this.countdown.price,
+                    type:"scatter",
+                    name: "Countdown"
+
+                  }
+              this.data.push(countdownPoints)
+              if (pakSaveX.length != 0) {
+                const pakSavePoints = {
+                  x: pakSaveX,
+                  y: this.pakSave[0].price,
+                  type:"scatter",
+                  name: "Pak n Save"
+                }
+                this.data.push(pakSavePoints)
+              }
             }
         },
         created() {
