@@ -8,10 +8,11 @@
                    style="width: 300px; height: 300px"
           ></b-image>
         </div>
-        <div class="tile is-4 is-vertical is-parent box">
+        <div class="tile is-5 is-vertical is-parent box">
           <div class="tile is-child box">
-            <p class="title">{{countdown.brand}} {{countdown.name}}</p>
-            <p align="bottom">${{countdown.salePrice}}</p>
+            <p class="title">{{displayName}}</p>
+            <p >{{countdown.volSize}}</p>
+            <p class="title" align="right" >${{countdown.salePrice}}</p>
           </div>
 <!--          <div class="tile is-child box">-->
 <!--            <p class="title">Two</p>-->
@@ -55,6 +56,12 @@
             this.getData()
         },
         computed: {
+            displayName: function () {
+                const brand = this.countdown.brand.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+                const name = this.countdown.name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+                return brand + " " + name
+            },
+
             imageName: function () {
                   return "https://static.countdown.co.nz/assets/product-images/big/" + this.countdown.image
             }
@@ -64,5 +71,11 @@
 </script>
 
 <style scoped>
+  .bottom {
+    position:absolute;
+    vertical-align: bottom;
+    align-text: bottom;
+    alignment: right;
+  }
 
 </style>
