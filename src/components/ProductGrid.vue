@@ -1,7 +1,7 @@
 <template>
   <div class="columns is-mobile is-multiline is-centered" style="padding-top: 30px">
     <div class="column is-narrow" style="width: 200px; height: 300px" v-for="item in this.products" :key="item.code">
-      <product-card :product="item"></product-card>
+      <product-card :product="item" class="cardSettings"></product-card>
     </div>
   </div>
 </template>
