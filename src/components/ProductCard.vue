@@ -71,9 +71,13 @@
     .test:hover > .title {
         white-space: normal;
         transition: height 2s;
-        /*z-index: -1;*/
-
+        z-index: -1;
         /*text-overflow: visible;*/
+    }
+    .cardSettings:hover {
+      z-index: 1000;
+      transition: height 2s;
+      width: 500px
     }
 
 </style>
