@@ -15,7 +15,6 @@
           <b-input placeholder="Search..." style="align-self: center" type="search" class="searchInput" v-model="searchQuery" >
           </b-input>
           <font-awesome-icon icon="search" size="2x" @click="searchForItem"  class="search" />
-          <h3>{{location}}</h3>
         </b-field>
         </div>
 
@@ -33,26 +32,34 @@
             return {
                 searchQuery: '',
                 bottom:false,
-                location:"Countdown"
+                location:"Countdown",
+                routeQuery: {}
             }
         },
         methods: {
             searchForItem() {
-                this.$router.push('/?search=' + this.searchQuery)
+                this.routeQuery.search = this.searchQuery
+                this.updateUrl()
+            },
+            updateUrl: function () {
+                this.$router.push({query: this.routeQuery});
             },
             getSearchLocation() {
                 if (this.$route.query.location == "Countdown"){
-                    this.location = "Countdown"
+                    this.routeQuery.location = "Countdown"
                 } else if (this.$route.query.location == "Pak-n-Save") {
-                    this.location = "Pak-n-Save"
+                    this.routeQuery.location = "Pak-n-Save"
                 } else {
-                    this.location = "Countdown"
+                    this.routeQuery.location = "Countdown"
                 }
+                this.updateUrl()
+                console.log(this.routeQuery)
             }
         },
         watch: {
             location() {
-                this.$router.push('?location=' + this.location)
+                this.routeQuery.location = this.location
+                this.updateUrl()
             }
         },
         mounted() {
