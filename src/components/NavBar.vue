@@ -1,5 +1,6 @@
 <template >
 <!--  <div id="app" class="container is-fluid" style="padding-left: 0px; padding-right: 0px; padding-bottom: 25px" >-->
+    <div style="padding-bottom: 30px">
     <b-navbar type="is-primary" >
       <template slot="brand">
         <h1 style="padding-left: 10px; padding-top: 13px; cursor: pointer;" @click="$router.push('/')">Supermarket PriceSpy </h1>
@@ -21,6 +22,7 @@
       </template>
 
     </b-navbar>
+    </div>
 
 <!--  </div>-->
 </template>

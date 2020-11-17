@@ -164,7 +164,6 @@ export default {
 
 .container {
   padding: 60px;
-  margin-top: 20px;
   position: center;
 }
 
