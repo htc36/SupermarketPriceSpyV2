@@ -1,5 +1,5 @@
 <template>
-  <div class="container is-fluid" style="width: 80%">
+  <div class="container is-fluid" style="width: 80%; background-color: white">
         <product-grid align-center></product-grid>
   </div>
 </template>

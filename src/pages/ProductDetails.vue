@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" style="background-color: white">
     <div>
       <div class="img">
         <b-image v-if="countdown != null"
