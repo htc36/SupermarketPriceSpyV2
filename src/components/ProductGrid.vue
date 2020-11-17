@@ -62,7 +62,12 @@ export default {
     },
     computed: {
         endPointURL: function () {
-            const base = "http://45.76.124.20:8080/api/getProducts?"
+            let base = "http://45.76.124.20:8080/api/"
+            if (this.$route.query.location == null || this.$route.query.location == "Countdown") {
+                base += "countdown/getProducts?"
+            }else {
+                base += "paknsave/getProducts?"
+            }
             const searchQuery = this.$route.query.search != null ? this.$route.query.search : ""
             return base + "limit=" + this.limit + "&dateOfSpecials=" + this.date + "&offset=" + this.offset + "&search=" + searchQuery;
         }
