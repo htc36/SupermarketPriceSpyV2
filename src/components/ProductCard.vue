@@ -1,30 +1,18 @@
 <template>
-    <div class="card cardSettings"
-            :loading="loading"
-            max-width="250"
-    >
-
+    <div class="card cardSettings" :loading="loading" max-width="250">
         <div class="test">
-        <div align="center" class="card-image" style="padding-top: 3px" @click="viewDetail">
-            <b-image
-                    :src="imageName"
-                    style="width: 150px; height: 150px"
-            ></b-image>
+          <div align="center" class="card-image" style="padding-top: 3px" @click="viewDetail">
+              <b-image
+                      :src="product.image"
+                      style="width: 150px; height: 150px"
+              ></b-image>
+          </div>
+          <p class="title" @click="viewDetail">{{product.displayName}}</p>
         </div>
-
-<!--        <v-card-title style="padding-bottom: 5px; font-size:0.8em; line-height: 1.1em" >{{displayName}}</v-card-title>-->
-        <p class="title" @click="viewDetail">{{displayName}}</p>
-        </div>
-<!--        <p style="padding: 15px; font-size:0.8em; cursor: pointer" @click="viewDetail">{{displayName}}</p>-->
-
         <p style="padding-left: 15px; font-size: 0.9em" class="subtitle is-6">
-<!--        <p style="" class="subtitle is-6">-->
-            {{product.volSize}}
         </p>
 
-        <p style="text-align: right; padding-right: 15px; padding-bottom: 15px; font-weight: bolder"> ${{product.salePrice}}</p>
-
-
+        <p style="text-align: right; padding-right: 15px; padding-bottom: 15px; font-weight: bolder"> ${{product.price}}</p>
     </div>
 </template>
 
@@ -33,21 +21,13 @@
         name: "ListItems",
         props: ["product"],
         computed: {
-          displayName: function () {
-            const brand = this.product.brand.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-            const name = this.product.name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-            return brand + " " + name
-          },
-          imageName: function () {
-           return "https://static.countdown.co.nz/assets/product-images/big/" + this.product.image
-          }
         },
         methods: {
             viewDetail() {
-                const id = this.product.code
+                const id = this.product.id
                 this.$router.push('/product/' + id)
             }
-        }
+        },
     }
 </script>
 

@@ -14,25 +14,6 @@ export default {
     components: {ProductCard},
     data() {
         return {
-            dummydata: [{
-                name: "dry cat food lamb & chicken",
-                brand: "chef",
-                volSize: "2kg",
-                type: "pet",
-                barcode: "9300657854584",
-                code: "100046",
-                image: "9300657854584.jpg",
-                salePrice: "14.00"
-            }, {
-                name: "cat food beef rice & carrot",
-                brand: "fancy feast inspirations",
-                volSize: "70g",
-                type: "pet",
-                barcode: "9300605133495",
-                code: "100080",
-                image: "9300605133495.jpg",
-                salePrice: "12.00"
-            }],
             products: [],
             date: "2020-09-28",
             limit: "30",
@@ -45,13 +26,46 @@ export default {
             this.offset = this.products.length
             axios.get(this.endPointURL)
                 .then(response => {
-                    this.products = this.products.concat(response.data.rows)
+                    // this.products = this.products.concat(response.data.rows)
+                    for (let item of response.data.rows){
+                      console.log(item)
+
+                       let product = {}
+                      if(this.location == "Pak-n-Save"){
+                        product.displayName = item.name
+                        product.amount = item.quantityType
+                        product.id = item.productId
+                        product.image = this.imageName(item.productId)
+                        product.price = item.price
+                      }else {
+                        product.displayName = this.displayName(item.name, item.brand)
+                        product.amount = item.volSize
+                        product.id = item.code
+                        product.image = this.imageName(item.image)
+                        product.price = item.salePrice
+                      }
+                      this.products.push(product)
+                    }
                 })
                 .catch(e => {
                     this.errors.push(e)
                 })
         },
-        bottomVisible() {
+      imageName: function (image) {
+        if (this.location == "Pak-n-Save") {
+          const img = image.split("-")[0]
+          return "https://a.fsimg.co.nz/product/retail/fan/image/400x400/" + img + ".png"
+
+        }else {
+          return "https://static.countdown.co.nz/assets/product-images/big/" + image
+        }
+      },
+      displayName: function (inputName, inputBrand) {
+        const brand = inputBrand.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+        const name = inputName.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+        return brand + " " + name
+      },
+      bottomVisible() {
             const scrollY = window.scrollY
             const visible = document.documentElement.clientHeight
             const pageHeight = document.documentElement.scrollHeight
@@ -63,17 +77,20 @@ export default {
     computed: {
         endPointURL: function () {
             let base = "http://45.76.124.20:8080/api/"
-            if (this.$route.query.location == null || this.$route.query.location == "Countdown") {
+            if (this.location == null || this.location == "Countdown") {
                 base += "countdown/getProducts?"
             }else {
                 base += "paknsave/getProducts?"
             }
             const searchQuery = this.$route.query.search != null ? this.$route.query.search : ""
             return base + "limit=" + this.limit + "&dateOfSpecials=" + this.date + "&offset=" + this.offset + "&search=" + searchQuery;
-        }
+        },
+        location: function () {
+          return this.$route.query.location
+        },
     },
-    watch: {
-        '$route': function () {
+  watch: {
+    '$route': function () {
             this.products = []
             this.getData();
         },

@@ -62,11 +62,21 @@
             location() {
                 this.routeQuery.location = this.location
                 this.updateUrl()
-            }
+            },
+            '$route': function () {
+              if (this.$route.query.location == "Pak-n-Save") {
+                this.location = "Pak-n-Save"
+              }
+            },
+            deep: true,
+            immediate: true,
         },
         mounted() {
             this.getSearchLocation()
             this.searchQuery = this.$route.query.search != null ? this.$route.query.search : ""
+            if (this.$route.query.location == "Pak-n-Save") {
+              this.location = "Pak-n-Save"
+            }
 
         },
     }
