@@ -8,7 +8,7 @@
 
       <div>
         <h1 class="title is-3" style="float:left;">{{ displayName }}</h1>
-        <h1 class="title is-3" style="float: left">${{ countdown.salePrice }}</h1>
+       <h1 class="title is-3" style="float: left">${{price}}</h1>
       </div>
 
 <!--      sort this out pls i dont get itttttttt why tf do i need to many breaks-->
@@ -19,31 +19,32 @@
       <br>
 
       <div>
-        <h1 class="subtitle is-5" style="float:left;">{{ countdown.volSize }}</h1>
+        <h1 class="subtitle is-5" style="float:left;">{{volume}}</h1>
       </div>
 
 
-      <div>
-        <table style="width:80%;">
-          <caption class="subtitle is-5" style="float: left;">Price Comparison</caption>
-          <tr>
-            <th>Store</th>
-            <th>Product Name</th>
-            <th>Current Price</th>
-          </tr>
-          <tr>
-            <td>Countdown</td>
-            <td>{{ countdown.name }}</td>
-            <td>${{ countdown.salePrice }}</td>
-          </tr>
-            <tr v-if="pakSave.length !== 0">
-              <td>Paknsave</td>
-              <td>{{ pakSave[0].name }}</td>
-              <td>${{ pakSave[0].price[pakSave[0].price.length - 1] }}</td>
-            </tr>
-        </table>
+<!--      <div>-->
+<!--        <table style="width:80%;">-->
+<!--          <caption class="subtitle is-5" style="float: left;">Price Comparison</caption>-->
+<!--          <tr>-->
+<!--            <th>Store</th>-->
+<!--            <th>Product Name</th>-->
+<!--            <th>Current Price</th>-->
+<!--          </tr>-->
+<!--          <tr>-->
+<!--            <td>Countdown</td>-->
+<!--            <td>{{ countdown.name }}</td>-->
+<!--            <td>${{ countdown.salePrice }}</td>-->
+<!--          </tr>-->
+<!--            <tr v-if="pakSave.length !== 0">-->
+<!--              <td>Paknsave</td>-->
+<!--              <td>{{ pakSave[0].name }}</td>-->
+<!--              <h1>whet</h1>-->
+<!--              <td>${{ pakSave[0].price[pakSave[0].price.length - 1] }}</td>-->
+<!--            </tr>-->
+<!--        </table>-->
 
-      </div>
+<!--      </div>-->
 
     </div>
 
@@ -148,10 +149,16 @@ export default {
     this.getData()
   },
   computed: {
+      isPaknSave: function () {
+          return this.$route.params.id.split("-").length >= 2
+      },
     displayName: function () {
-        if (this.isPaknSave){
-            return this.pakSave.name
-        }
+      if (this.isPaknSave){
+        console.log("under here")
+        console.log(this.pakSave.name)
+        console.log(this.pakSave)
+        return this.pakSave.name
+      }
       const brand = this.countdown.brand.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
@@ -160,9 +167,16 @@ export default {
       });
       return brand + " " + name
     },
-      isPaknSave: function () {
-          return this.$route.params.id.split("-").length >= 2
-      },
+    price: function () {
+        // if (this.isPaknSave) {
+        //   return this.pakSave.currentPrice
+        // }
+        // return this.countdown.salePrice
+        return this.isPaknSave ? this.pakSave.currentPrice : this.countdown.salePrice
+    },
+    volume: function () {
+        return this.isPaknSave ? this.pakSave.quantityType : this.countdown.volSize
+    },
 
     imageName: function () {
         if (this.isPaknSave) {
