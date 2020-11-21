@@ -87,7 +87,13 @@ export default {
   },
   methods: {
     getData() {
-      let url = "http://45.76.124.20:8080/api/pakNsave/getSingleLinkedProductHistory?code=" + this.$route.params.id + "&location=Taupo"
+        let store
+        if(this.isPaknSave) {
+            store = "pakNsave"
+        } else {
+            store = "countdown"
+        }
+      let url = "http://45.76.124.20:8080/api/" + store + "/getHistory?code=" + this.$route.params.id + "&location=Taupo"
       axios.get(url)
           .then(response => {
             this.dates = response.data.dates
@@ -143,6 +149,9 @@ export default {
   },
   computed: {
     displayName: function () {
+        if (this.isPaknSave){
+            return this.pakSave.name
+        }
       const brand = this.countdown.brand.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
@@ -151,8 +160,15 @@ export default {
       });
       return brand + " " + name
     },
+      isPaknSave: function () {
+          return this.$route.params.id.split("-").length >= 2
+      },
 
     imageName: function () {
+        if (this.isPaknSave) {
+            const img = this.$route.params.id.split("-")[0]
+            return "https://a.fsimg.co.nz/product/retail/fan/image/400x400/" + img + ".png"
+        }
       return "https://static.countdown.co.nz/assets/product-images/big/" + this.countdown.image
     }
   }
