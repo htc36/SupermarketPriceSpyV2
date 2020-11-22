@@ -1,50 +1,48 @@
 <template>
   <div class="container" style="background-color: white">
     <div>
-      <div class="img">
-        <b-image v-if="countdown != null"
-                 :src="imageName"></b-image>
-      </div>
-
-      <div>
-        <h1 class="title is-3" style="float:left;">{{ displayName }}</h1>
-       <h1 class="title is-3" style="float: left">${{price}}</h1>
-      </div>
-
-<!--      sort this out pls i dont get itttttttt why tf do i need to many breaks-->
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-
-      <div>
-        <h1 class="subtitle is-5" style="float:left;">{{volume}}</h1>
-      </div>
-
+          <div class="tile is-ancestor">
+            <div class="tile img">
+              <b-image v-if="countdown != null" :src="imageName" style="width: 90%; height: 90%;"></b-image>
+            </div>
+            <div class = "tile is-8 is-vertical">
+              <h1 class="title tile">{{ displayName }} {{volume}} - ${{price}}</h1>
+              <div class="tile">
+                <table style="width:90%;">
+                  <caption class="subtitle" style="float: left;">Price Comparison</caption>
+                  <tr>
+                    <th>Store</th>
+                    <th>Product Name</th>
+                    <th>Current Price</th>
+                  </tr>
+                  <tr v-if="countdown.length !== 0">
+                  <tr v-for="item in this.countdown" :key="item.name">
+                    <td>Countdown</td>
+                    <td v-if="isPaknSave"><a :href="'/#/product/' + item.id">{{item.name}}</a></td>
+                    <td v-else>{{item.name}}</td>
+                    <td>${{ item.price[item.price.length - 1] }}</td>
+                  </tr>
+                  <tr v-for="item in this.pakSave" :key="item.name">
+                    <td>Pak'nSave</td>
+                    <td v-if="!isPaknSave"><a :href="'/#/product/' + item.id">{{item.name}}</a></td>
+                    <td v-else>{{item.name}}</td>
+                    <td>${{ item.price[item.price.length - 1] }}</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="tile"></div>
+            </div>
+          </div>
+<!--      <div class="img" style="float : right">-->
+<!--        <b-image v-if="countdown != null"-->
+<!--                 :src="imageName"></b-image>-->
+<!--      </div>-->
 
 <!--      <div>-->
-<!--        <table style="width:80%;">-->
-<!--          <caption class="subtitle is-5" style="float: left;">Price Comparison</caption>-->
-<!--          <tr>-->
-<!--            <th>Store</th>-->
-<!--            <th>Product Name</th>-->
-<!--            <th>Current Price</th>-->
-<!--          </tr>-->
-<!--          <tr>-->
-<!--            <td>Countdown</td>-->
-<!--            <td>{{ countdown.name }}</td>-->
-<!--            <td>${{ countdown.salePrice }}</td>-->
-<!--          </tr>-->
-<!--            <tr v-if="pakSave.length !== 0">-->
-<!--              <td>Paknsave</td>-->
-<!--              <td>{{ pakSave[0].name }}</td>-->
-<!--              <h1>whet</h1>-->
-<!--              <td>${{ pakSave[0].price[pakSave[0].price.length - 1] }}</td>-->
-<!--            </tr>-->
-<!--        </table>-->
-
+<!--        <h1 class="title is-3" style="float:left; ">{{ displayName }} {{volume}} - ${{price}}dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</h1>-->
 <!--      </div>-->
+
+<!--      sort this out pls i dont get itttttttt why tf do i need to many breaks-->
 
     </div>
 
@@ -110,25 +108,24 @@ export default {
       let countdownX = []
       let pakSaveX = []
       if (this.countdown.length != 0) {
-        for (const dateIndex of this.countdown.date) {
+        for (const dateIndex of this.countdown[0].date) {
           const date = this.dates[dateIndex].split("/")
-          console.log(this.dates[dateIndex])
           const month = parseInt(date[1]) - 1
           const dateObj = new Date(date[2], month, date[0])
           countdownX.push(dateObj)
-          console.log(dateObj)
         }
       }
       if (this.pakSave.length != 0) {
         for (const dateIndex of this.pakSave[0].date) {
           const date = this.dates[dateIndex].split("/")
-          const dateObj = new Date(date[2], date[1], date[0])
+          const month = parseInt(date[1]) - 1
+          const dateObj = new Date(date[2], month, date[0])
           pakSaveX.push(dateObj)
         }
       }
       const countdownPoints = {
         x: countdownX,
-        y: this.countdown.price,
+        y: this.countdown[0].price,
         type: "scatter",
         name: "Countdown"
 
@@ -154,28 +151,22 @@ export default {
       },
     displayName: function () {
       if (this.isPaknSave){
-        console.log("under here")
-        console.log(this.pakSave.name)
-        console.log(this.pakSave)
-        return this.pakSave.name
+        return this.pakSave[0].name
       }
-      const brand = this.countdown.brand.replace(/\w\S*/g, function (txt) {
+      const brand = this.countdown[0].brand.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
-      const name = this.countdown.name.replace(/\w\S*/g, function (txt) {
+      const name = this.countdown[0].name.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
       return brand + " " + name
     },
     price: function () {
-        // if (this.isPaknSave) {
-        //   return this.pakSave.currentPrice
-        // }
-        // return this.countdown.salePrice
-        return this.isPaknSave ? this.pakSave.currentPrice : this.countdown.salePrice
+        return this.isPaknSave ? this.pakSave[0].price[this.pakSave[0].price.length - 1]: this.countdown[0].salePrice
+
     },
     volume: function () {
-        return this.isPaknSave ? this.pakSave.quantityType : this.countdown.volSize
+        return this.isPaknSave ? this.pakSave[0].quantityType : this.countdown[0].volSize
     },
 
     imageName: function () {
@@ -183,7 +174,7 @@ export default {
             const img = this.$route.params.id.split("-")[0]
             return "https://a.fsimg.co.nz/product/retail/fan/image/400x400/" + img + ".png"
         }
-      return "https://static.countdown.co.nz/assets/product-images/big/" + this.countdown.image
+      return "https://static.countdown.co.nz/assets/product-images/zoom/" + this.countdown[0].image
     }
   }
 
