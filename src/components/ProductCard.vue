@@ -4,7 +4,9 @@
           <div align="center" class="card-image" style="padding-top: 3px" @click="viewDetail">
               <b-image
                       :src="product.image"
-                      style="width: 150px; height: 150px"
+                      :placeholder="require('../../loading.gif')"
+                      style="width: 150px; height: 150px; image-placeholder-blur-enabled: false"
+
               ></b-image>
           </div>
           <p class="title" @click="viewDetail">{{product.displayName}}</p>

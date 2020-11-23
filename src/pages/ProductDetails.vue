@@ -116,21 +116,22 @@ export default {
         }
       }
       if (this.pakSave.length != 0) {
-        for (const dateIndex of this.pakSave[0].date) {
-          const date = this.dates[dateIndex].split("/")
-          const month = parseInt(date[1]) - 1
-          const dateObj = new Date(date[2], month, date[0])
-          pakSaveX.push(dateObj)
-        }
+      for (const dateIndex of this.pakSave[0].date) {
+        const date = this.dates[dateIndex].split("/")
+        const month = parseInt(date[1]) - 1
+        const dateObj = new Date(date[2], month, date[0])
+        pakSaveX.push(dateObj)
       }
-      const countdownPoints = {
-        x: countdownX,
-        y: this.countdown[0].price,
-        type: "scatter",
-        name: "Countdown"
-
+    }
+      if (countdownX.length != 0) {
+          const countdownPoints = {
+              x: countdownX,
+              y: this.countdown[0].price,
+              type: "scatter",
+              name: "Countdown"
+          }
+          this.data.push(countdownPoints)
       }
-      this.data.push(countdownPoints)
       if (pakSaveX.length != 0) {
         const pakSavePoints = {
           x: pakSaveX,

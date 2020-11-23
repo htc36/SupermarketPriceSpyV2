@@ -1,5 +1,6 @@
 <template>
-  <div class="columns is-mobile is-multiline is-centered" style="padding-top: 30px">
+  <div class="columns is-mobile is-multiline is-centered" style="padding-top: 30px; min-height: 800px">
+    <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="false"></b-loading>
     <div class="column is-narrow" style="width: 200px; height: 300px" v-for="item in this.products" :key="item.code">
       <product-card :product="item" class="cardSettings"></product-card>
     </div>
@@ -18,11 +19,13 @@ export default {
             date: "2020-09-28",
             limit: "30",
             offset: "0",
-            bottom: false
+            bottom: false,
+            isLoading: true
         }
     },
     methods: {
         getData() {
+            this.isLoading = true
             this.offset = this.products.length
             axios.get(this.endPointURL)
                 .then(response => {
@@ -46,6 +49,7 @@ export default {
                       }
                       this.products.push(product)
                     }
+                    this.isLoading = false
                 })
                 .catch(e => {
                     this.errors.push(e)
@@ -112,5 +116,8 @@ export default {
 </script>
 
 <style scoped>
+  .cardSettings {
+    min-height: 100%;
+  }
 
 </style>
