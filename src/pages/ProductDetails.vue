@@ -1,15 +1,22 @@
 <template>
-  <div class="container" style="background-color: white">
+  <div class="container" style="background-color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+    <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="false"></b-loading>
     <div>
-          <div class="tile is-ancestor">
-            <div class="tile img">
-              <b-image v-if="countdown != null" :src="imageName" style="width: 90%; height: 90%;"></b-image>
+          <div class="tile is-ancestor" style="">
+            <div class="tile" style="">
+              <b-image v-if="countdown != null" :src="imageName" style="max-height: 400px; max-width: 400px;float: left; padding-bottom: 20px"
+                       :placeholder="require('../../loading.gif')"
+              ></b-image>
             </div>
             <div class = "tile is-8 is-vertical">
               <h1 class="title tile">{{ displayName }} {{volume}} - ${{price}}</h1>
               <div class="tile">
-                <table style="width:90%;">
-                  <caption class="subtitle" style="float: left;">Price Comparison</caption>
+                <table style="width:100%;">
+                  <tr>
+                    <td colspan="4">
+                      <caption class="subtitle" style="float: left;">Price Comparison</caption>
+                    </td>
+                  </tr>
                   <tr>
                     <th>Store</th>
                     <th>Product Name</th>
@@ -73,19 +80,31 @@ export default {
       countdown: [],
       pakSave: [],
       data: [],
+        isLoading: true,
       layout: {
-        title: "Price History",
+        // title: "Price History",
         hovermode: "x",
         spikesnap: "cursor",
         // hoverinfo: "all",
         hoverformat: "%H~%M~%S.%2f",
         spikedistance: 100,
         xaxis: {'showspikes': true},
-      }
+          showlegend: true,
+          legend: {"orientation": "h"},
+          margin: {
+              t: 20, //top margin
+              l: 20, //left margin
+              r: 25, //right margin
+              b: 80 //bottom margin
+          }
+      },
+
+
     }
   },
   methods: {
     getData() {
+        this.isLoading = true
         let store
         if(this.isPaknSave) {
             store = "pakNsave"
@@ -99,6 +118,7 @@ export default {
             this.countdown = response.data.result.countdown
             this.pakSave = response.data.result.paknsave
             this.setPlotPoints()
+            this.isLoading = false
           })
           .catch(e => {
             this.errors.push(e)
@@ -193,6 +213,15 @@ export default {
   width: 300px;
   height: 300px;
   float: right;
+}
+body {
+  margin: 0;
+}
+
+#over img {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 </style>
 
