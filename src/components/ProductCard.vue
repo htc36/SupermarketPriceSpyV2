@@ -1,7 +1,7 @@
 <template>
     <div class="card cardSettings" :loading="loading" max-width="250">
         <div class="test">
-          <div align="center" class="card-image" style="padding-top: 3px" @click="viewDetail">
+          <div align="center" class="card-image" style="padding-top: 3px; cursor: pointer" @click="viewDetail">
               <b-image
                       :src="product.image"
                       :placeholder="require('../../loading.gif')"
@@ -27,7 +27,7 @@
         methods: {
             viewDetail() {
                 const id = this.product.id
-                this.$router.push('/product/' + id)
+                this.$router.push({ path: '/product/' + id, query: this.$route.query})
             }
         },
     }
