@@ -87,11 +87,19 @@ export default {
                 base += "paknsave/getProducts?"
             }
             const searchQuery = this.$route.query.search != null ? this.$route.query.search : ""
-            return base + "limit=" + this.limit + "&dateOfSpecials=" + this.date + "&offset=" + this.offset + "&search=" + searchQuery;
+            const store = "&store=" + this.$route.query.store
+            return base + "limit=" + this.limit + "&dateOfSpecials=" + this.getDateStartOfWeek + "&offset=" + this.offset + "&search=" + searchQuery + store;
         },
         location: function () {
           return this.$route.query.location
         },
+        getDateStartOfWeek: function () {
+            let date = new Date();
+            var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1) - 7;
+            const mondayDate = new Date(date.setDate(diff)).toLocaleDateString();
+            const splitItems = mondayDate.split("/")
+            return splitItems[2] + "-" + splitItems[0] + "-" +splitItems[1]
+        }
     },
   watch: {
     '$route': function () {

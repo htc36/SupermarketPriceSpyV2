@@ -20,6 +20,16 @@
         </div>
 
       </template>
+      <template slot="end">
+        <h1 style="padding-top: 13px; color: white"> Location: </h1>
+        <b-select v-model="store" class="location">
+          <option>Albany</option>
+          <option>Royal Oak</option>
+          <option>Petone</option>
+          <option>Taupo</option>
+          <option>Whangarei</option>
+       </b-select>
+      </template>
 
     </b-navbar>
     </div>
@@ -35,7 +45,8 @@
                 searchQuery: '',
                 bottom:false,
                 location:"Countdown",
-                routeQuery: {}
+                routeQuery: {},
+                store: "Albany"
             }
         },
         methods: {
@@ -55,8 +66,13 @@
                 } else {
                     this.routeQuery.location = "Countdown"
                 }
-                this.updateUrl()
-                console.log(this.routeQuery)
+            },
+            getStore() {
+                if (this.$route.query.store == null) {
+                    this.routeQuery.store = "Albany"
+                } else {
+                    this.routeQuery.store = this.$route.query.store
+                }
             },
             clickHome() {
                 this.routeQuery.search = ""
@@ -68,6 +84,10 @@
                 this.routeQuery.location = this.location
                 this.updateUrl()
             },
+            store() {
+                this.routeQuery.store = this.store
+                this.updateUrl()
+            },
             '$route': function () {
               if (this.$route.query.location == "Pak-n-Save") {
                 this.location = "Pak-n-Save"
@@ -77,7 +97,9 @@
             immediate: true,
         },
         mounted() {
+            this.getStore()
             this.getSearchLocation()
+            this.updateUrl()
             this.searchQuery = this.$route.query.search != null ? this.$route.query.search : ""
             if (this.$route.query.location == "Pak-n-Save") {
               this.location = "Pak-n-Save"
