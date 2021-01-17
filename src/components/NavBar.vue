@@ -10,8 +10,8 @@
 <!--        <b-field group-multiline grouped style="padding-left: 3em">-->
         <b-field style="">
           <b-select v-model="location" class="location">
-            <option>Pak-n-Save</option>
-            <option>Countdown</option>
+            <option value="paknsave">Pak-n-Save</option>
+            <option value="countdown">Countdown</option>
           </b-select>
           <b-input placeholder="Search..." style="align-self: center" type="search" class="searchInput" v-model="searchQuery" @keyup.native.enter="searchForItem" >
           </b-input>
@@ -22,13 +22,16 @@
       </template>
       <template slot="end">
         <h1 style="padding-top: 13px; color: white"> Location: </h1>
+<!--        <b-select v-model="store" class="location">-->
+<!--          <option value='{"countdown":"222", "paknsave":"3333"}'>Albany</option>-->
+<!--          <option >Royal Oak</option>-->
+<!--          <option>Petone</option>-->
+<!--          <option>Taupo</option>-->
+<!--          <option>Whangarei</option>-->
+<!--       </b-select>-->
         <b-select v-model="store" class="location">
-          <option>Albany</option>
-          <option>Royal Oak</option>
-          <option>Petone</option>
-          <option>Taupo</option>
-          <option>Whangarei</option>
-       </b-select>
+          <option v-for = "store in storeList" :value="store.value" :key="store.value" >{{store.name}}</option>
+        </b-select>
       </template>
 
     </b-navbar>
@@ -38,15 +41,21 @@
 </template>
 
 <script>
+import api from '@/api'
+
     export default {
         name: "Navbar",
         data () {
             return {
                 searchQuery: '',
                 bottom:false,
-                location:"Countdown",
+                location:"countdown",
                 routeQuery: {},
-                store: "Albany"
+                store: {
+                    "countdown": "2449151",
+                    "paknsave": "21ecaaed-0749-4492-985e-4bb7ba43d59c"
+                },
+                storeList: [{"name" : "Albany" , "value" : {"countdown" : "123123131", "paknsave" : "hsdfsfs"}}]
             }
         },
         methods: {
@@ -59,12 +68,12 @@
                 this.$router.push({query: this.routeQuery});
             },
             getSearchLocation() {
-                if (this.$route.query.location == "Countdown"){
-                    this.routeQuery.location = "Countdown"
-                } else if (this.$route.query.location == "Pak-n-Save") {
-                    this.routeQuery.location = "Pak-n-Save"
+                if (this.$route.query.location == "countdown"){
+                    this.routeQuery.location = "countdown"
+                } else if (this.$route.query.location == "paknsave") {
+                    this.routeQuery.location = "paknsave"
                 } else {
-                    this.routeQuery.location = "Countdown"
+                    this.routeQuery.location = "countdown"
                 }
             },
             getStore() {
@@ -77,7 +86,18 @@
             clickHome() {
                 this.routeQuery.search = ""
                 this.$router.push({ path: '/', query: this.routeQuery})
-            }
+            },
+            loadStoreNames() {
+                api.getStoreNames()
+                    .then(response => {
+                        this.storeList = response.data
+                        if (!this.$cookies.isKey('store')){
+                            this.$cookies.set('store',this.store);
+                        }
+                        this.store = this.$cookies.get('store')
+                        // this.routeQuery.store = this.store.countdown
+                    })
+            },
         },
         watch: {
             location() {
@@ -85,12 +105,13 @@
                 this.updateUrl()
             },
             store() {
-                this.routeQuery.store = this.store
+                this.routeQuery.store = this.store.countdown
+                this.$cookies.set('store',this.store);
                 this.updateUrl()
             },
             '$route': function () {
-              if (this.$route.query.location == "Pak-n-Save") {
-                this.location = "Pak-n-Save"
+              if (this.$route.query.location == "paknsave") {
+                this.location = "paknsave"
               }
             },
             deep: true,
@@ -100,9 +121,10 @@
             this.getStore()
             this.getSearchLocation()
             this.updateUrl()
+            this.loadStoreNames()
             this.searchQuery = this.$route.query.search != null ? this.$route.query.search : ""
-            if (this.$route.query.location == "Pak-n-Save") {
-              this.location = "Pak-n-Save"
+            if (this.$route.query.location == "paknsave") {
+              this.location = "paknsave"
             }
 
         },

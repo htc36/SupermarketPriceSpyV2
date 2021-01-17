@@ -8,8 +8,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 import ProductCard from "@/components/ProductCard";
+import api from '@/api'
+
 export default {
     name: "ProductGrid",
     components: {ProductCard},
@@ -20,21 +22,31 @@ export default {
             limit: "30",
             offset: "0",
             bottom: false,
-            isLoading: true
-        }
+            isLoading: true,
+            storeCode : "",
+            defaultStore: {
+                "countdown": "2449151",
+                // "paknsave": "21ecaaed-0749-4492-985e-4bb7ba43d59c"
+                "paknsave": "poo"
+            },
+    }
     },
     methods: {
         getData() {
             this.isLoading = true
             this.offset = this.products.length
-            axios.get(this.endPointURL)
+
+            let stores = this.$cookies.isKey('store') ? this.$cookies.get("store") : this.defaultStore
+            this.storeCode = stores[this.location]
+
+            api.getAllProducts(this.endPointURL)
                 .then(response => {
                     // this.products = this.products.concat(response.data.rows)
                     for (let item of response.data.rows){
                       console.log(item)
 
                        let product = {}
-                      if(this.location == "Pak-n-Save"){
+                      if(this.location == "paknsave"){
                         product.displayName = item.name
                         product.amount = item.quantityType
                         product.id = item.productId
@@ -52,7 +64,7 @@ export default {
                     this.isLoading = false
                 })
                 .catch(e => {
-                    this.errors.push(e)
+                    console.log(e)
                 })
         },
       imageName: function (image) {
@@ -80,14 +92,15 @@ export default {
     },
     computed: {
         endPointURL: function () {
-            let base = "http://45.76.124.20:8080/api/"
-            if (this.location == null || this.location == "Countdown") {
-                base += "countdown/getProducts?"
+            let base = ""
+            if (this.location == null || this.location == "countdown") {
+                base += "/countdown/getProducts?"
             }else {
-                base += "paknsave/getProducts?"
+                base += "/paknsave/getProducts?"
             }
             const searchQuery = this.$route.query.search != null ? this.$route.query.search : ""
-            const store = "&store=" + this.$route.query.store
+            const store = "&storeCode=" + this.storeCode
+            // const store = "&cdStoreCode=" + this.storeCodes['countdown'] + "&psStoreCode =" + this.storeCodes['paknsave']
             return base + "limit=" + this.limit + "&dateOfSpecials=" + this.getDateStartOfWeek + "&offset=" + this.offset + "&search=" + searchQuery + store;
         },
         location: function () {

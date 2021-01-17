@@ -6,11 +6,16 @@ import 'buefy/dist/buefy.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+import 'leaflet/dist/leaflet.css';
+
 
 import ProductPage from './pages/ProductPage'
 import ProductDetails from "@/pages/ProductDetails";
 
+Vue.use(require('vue-cookies'))
 
+Vue.use(LMap, LTileLayer, LMarker)
 library.add(faSearch)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(Buefy, {
