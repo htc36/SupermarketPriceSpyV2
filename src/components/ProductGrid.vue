@@ -68,7 +68,7 @@ export default {
                 })
         },
       imageName: function (image) {
-        if (this.location == "Pak-n-Save") {
+        if (this.location == "paknsave") {
           const img = image.split("-")[0]
           return "https://a.fsimg.co.nz/product/retail/fan/image/400x400/" + img + ".png"
 

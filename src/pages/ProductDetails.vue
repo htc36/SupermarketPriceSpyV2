@@ -166,7 +166,7 @@ export default {
       setMapPoints(data) {
         let id = 0
         for (let store of data) {
-            if (store.cdLat != null) {
+            if (store.cdPrice != null) {
                 this.$refs.storesMap.createMarker(id, 3, store.cdLat, store.cdLng, store.cdPrice, store.cdStoreName, false)
                 id++
             }
